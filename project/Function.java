@@ -30,6 +30,7 @@ public class Function
         Marker.put("ो",1);
         Marker.put("ौ",1);
         Marker.put("ृ",1);
+        Marker.put("ं",1);
    
         Marker.put("क",2);
         Marker.put("ख",2);
@@ -64,6 +65,7 @@ public class Function
         Marker.put("ष",2);
         Marker.put("स",2);
         Marker.put("ह",2);
+        
         Marker.put("्",3);
     }
     public void RemoveSchwa(String s)
@@ -75,8 +77,10 @@ public class Function
              int strLen = s.length(),flag,i,j;
              char array[] = new char[strLen];
              char answer[] = new char[100];
+             char[] Syllable = new char[100];
              String x1 = "्",x2;
              j = 0;
+             System.out.println("Before SCHWA removal : "+s);
              for (i=0 ;i < strLen ; i++)
              {
                  flag = 1;
@@ -114,21 +118,21 @@ public class Function
                      }  
                  }
              } 
-             Set set = CharMarker.entrySet();
-             Iterator itr = set.iterator();
-             while(itr.hasNext())
-             {
-                Map.Entry me = (Map.Entry)itr.next();
-                System.out.print(me.getKey() + ":");
-                System.out.print(me.getValue() + " ");
-             }
-             System.out.println("\n2");
+//             Set set = CharMarker.entrySet();
+//             Iterator itr = set.iterator();
+//             while(itr.hasNext())
+//             {
+//                Map.Entry me = (Map.Entry)itr.next();
+//                System.out.print(me.getKey() + ":");
+//                System.out.print(me.getValue() + " ");
+//             }
+//             System.out.println("\n2");
              //STEP 2-------------------------------------------------------------------------------------------
              for (i=0 ;i < strLen ; i++)
              {
                  flag = 1;
                  array[i] = s.charAt(i);
-                 if(Character.toString(array[i]).equals("य") && CharMarker.get(Character.toString(s.charAt(i))).equals("U"))
+                 if(i+1 < strLen && Marker.get(Character.toString(s.charAt(i+1))) != 3 && Marker.get(Character.toString(s.charAt(i+1))) != 1 && Character.toString(array[i]).equals("य") && CharMarker.get(Character.toString(s.charAt(i))).equals("U"))
                  {
                      if((i-1)>=0 && Marker.get(Character.toString(s.charAt(i-1)))==0)
                      {
@@ -140,7 +144,7 @@ public class Function
                      }
                      
                  }
-                 if(flag != 0 && (i-2)>=0 && Character.toString(array[i]).equals("य") && CharMarker.get(Character.toString(s.charAt(i))).equals("U") )
+                 if(flag != 0 && (i-2)>=0 && i+1 < strLen && Marker.get(Character.toString(s.charAt(i+1))) != 3 && Marker.get(Character.toString(s.charAt(i+1))) != 1 && Character.toString(array[i]).equals("य") && CharMarker.get(Character.toString(s.charAt(i))).equals("U") )
                  {
                      String temp = Character.toString(s.charAt(i-2)) +Character.toString(s.charAt(i-1));
                      if(temp.equals("रि"))
@@ -334,7 +338,7 @@ public class Function
                  array[i] = s.charAt(i);
                  if(Marker.get(Character.toString(s.charAt(i))) == 2)
                  {
-                     if(i+2 < strLen && Marker.get(Character.toString(s.charAt(i+2))) == 2 &&  Marker.get(Character.toString(s.charAt(i+2))) == 3)
+                     if(i+2 < strLen && Marker.get(Character.toString(s.charAt(i+1))) == 2 &&  Marker.get(Character.toString(s.charAt(i+2))) == 3)
                      {  
                          if(CharMarker.get(Character.toString(s.charAt(i))).equals("U"))
                         {
@@ -369,6 +373,7 @@ public class Function
                             if(i-1>=0 && Marker.get(Character.toString(s.charAt(i-1))) == 0 && Marker.get(Character.toString(s.charAt(i+1))) == 0)    
                             {
                                   CharMarker.put(Character.toString(s.charAt(i)),"H");      //fullvowel + fullvowel
+                                  flag = 0;
                             }
                             if(i-1>=0 && Marker.get(Character.toString(s.charAt(i-1))) == 0 && Marker.get(Character.toString(s.charAt(i+1))) == 2)
                             {                               
@@ -377,13 +382,15 @@ public class Function
                                     if(CharMarker.get(Character.toString(s.charAt(i+1))).equals("U") || CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
                                    {
                                        CharMarker.put(Character.toString(s.charAt(i)),"H");  
+                                       flag = 0;
                                    }
                                 }                                              //fullvowel + unknown/NewFullConsonant
-                                if(i+1 == strLen-1)
+                                if(i+2 == strLen)
                                 { 
                                     if(CharMarker.get(Character.toString(s.charAt(i+1))).equals("U") || CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
                                    {
                                        CharMarker.put(Character.toString(s.charAt(i)),"H"); 
+                                       flag = 0;
                                    }
                                 }
                             }
@@ -392,11 +399,13 @@ public class Function
                                 if(i+2 < strLen && Marker.get(Character.toString(s.charAt(i+2))) == 1)
                                 {
                                        CharMarker.put(Character.toString(s.charAt(i)),"H");  //fullvowel + matraconsonant
+                                       flag = 0;
                                 }
                             }
                             if(i-2>=0 && Marker.get(Character.toString(s.charAt(i-2))) == 2 && Marker.get(Character.toString(s.charAt(i-1))) == 1 && Marker.get(Character.toString(s.charAt(i+1))) == 0)
                             {        
                                        CharMarker.put(Character.toString(s.charAt(i)),"H");  //matraconsonant + fullvowel
+                                       flag = 0;
                             }
                             if(i-2>=0 && Marker.get(Character.toString(s.charAt(i-2))) == 2 && Marker.get(Character.toString(s.charAt(i-1))) == 1 && Marker.get(Character.toString(s.charAt(i+1))) == 2)
                             {        
@@ -405,6 +414,7 @@ public class Function
                                     if(CharMarker.get(Character.toString(s.charAt(i+1))).equals("U") || CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
                                    {
                                        CharMarker.put(Character.toString(s.charAt(i)),"H");  
+                                       flag = 0;
                                    }
                                 }                                              //matraconsonant + unknown/NewFullConsonant
                                 if(i+1 == strLen-1)
@@ -412,6 +422,7 @@ public class Function
                                     if(CharMarker.get(Character.toString(s.charAt(i+1))).equals("U") || CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
                                    {
                                        CharMarker.put(Character.toString(s.charAt(i)),"H"); 
+                                       flag = 0;
                                    }
                                 }
                             }
@@ -420,12 +431,16 @@ public class Function
                                  if(i+2 < strLen && Marker.get(Character.toString(s.charAt(i+2))) == 1)
                                 {
                                        CharMarker.put(Character.toString(s.charAt(i)),"H");  //matraconsonant + matraconsonant
+                                       flag = 0;
                                 }
                             }
                             if(i-1>=0 && Marker.get(Character.toString(s.charAt(i-1))) == 2 && Marker.get(Character.toString(s.charAt(i+1))) == 0)
                             {        
                                 if(CharMarker.get(Character.toString(s.charAt(i-1))).equals("F"))
-                                       CharMarker.put(Character.toString(s.charAt(i)),"H");  //fullconsonant + fullvowel
+                                {
+                                    CharMarker.put(Character.toString(s.charAt(i)),"H");
+                                    flag = 0;
+                                }  //fullconsonant + fullvowel
                             }
                             if(i-1>=0 && Marker.get(Character.toString(s.charAt(i-1))) == 2 &&CharMarker.get(Character.toString(s.charAt(i-1))).equals("F") && Marker.get(Character.toString(s.charAt(i+1))) == 2)
                             {        
@@ -434,6 +449,7 @@ public class Function
                                     if(CharMarker.get(Character.toString(s.charAt(i+1))).equals("U") || CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
                                    {
                                        CharMarker.put(Character.toString(s.charAt(i)),"H");  
+                                       flag = 0;
                                    }
                                 }                                              //fullconsonant + unknown/NewFullConsonant
                                 if(i+1 == strLen-1)
@@ -441,6 +457,7 @@ public class Function
                                     if(CharMarker.get(Character.toString(s.charAt(i+1))).equals("U") || CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
                                    {
                                        CharMarker.put(Character.toString(s.charAt(i)),"H"); 
+                                       flag = 0;
                                    }
                                 }
                             }
@@ -449,9 +466,10 @@ public class Function
                                  if(i+2 < strLen && Marker.get(Character.toString(s.charAt(i+2))) == 1)
                                 {
                                        CharMarker.put(Character.toString(s.charAt(i)),"H");  //fullconsonant + matraconsonant
+                                       flag = 0;
                                 }
                             }
-                            else
+                            else if(flag==1)
                                 CharMarker.put(Character.toString(s.charAt(i)),"F");
                         }
                      }                
@@ -461,11 +479,12 @@ public class Function
              {
                 System.out.print( key + ":" + CharMarker.get(key) + " ");
              }
-             System.out.println("\n After SCHWA Removal");
+             System.out.print("After SCHWA Removal : ");
              int k = 0;
              for (i=0 ;i < strLen ; i++)
              {
                  flag = 1;
+                 System.out.println(s.charAt(i));
                //  array[i] = s.charAt(i);
                  if(Marker.get(Character.toString(s.charAt(i)))==0)             //FullVowel
                  {
@@ -474,7 +493,7 @@ public class Function
                  }
                  if(Marker.get(Character.toString(s.charAt(i)))==2)        //Consonant
                  {
-                     if((i+1)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==1)       //Vowel
+                     if((i+1)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==1)       //MatraVowel
                      {
                         answer[k] = s.charAt(i);
                         k++;
@@ -511,5 +530,129 @@ public class Function
              {
                  System.out.print(answer[i]);
              }
+             System.out.println("");
+             
+             System.out.print("Syllable Boundary: ");
+             k = 0;
+             for (i=0 ;i < strLen ; i++)
+             {
+                 flag = 0;
+               //  array[i] = s.charAt(i);
+                 if(Marker.get(Character.toString(s.charAt(i)))==0)     //FullVowel
+                 {
+                     Syllable[k] = s.charAt(i);                               
+                     k++;
+                     if((i+2)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==2 && Marker.get(Character.toString(s.charAt(i+2)))==1)       
+                     {                                                                         //FullVowel + MatraConsonant
+                        Syllable[k] = '-';              //break
+                        k++;
+                        flag=1;
+                     }
+                     if((i+2)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==2 && Marker.get(Character.toString(s.charAt(i+2)))!=3 && Marker.get(Character.toString(s.charAt(i+2)))!=1)       
+                     {                                                                         //FullVowel + Consonant(FULL)
+                         if(CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
+                         {
+                               Syllable[k] = '-';              //break
+                               k++;
+                               flag=1;
+                         }
+                     }
+                     if((i+2)== strLen && Marker.get(Character.toString(s.charAt(i+1)))==2)       
+                     {                                                                         //FullVowel + LastConsonant(FULL)
+                         if(CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
+                         {
+                               Syllable[k] = '-';              //break
+                               k++;
+                               flag=1;
+                         }
+                     }
+                 }
+                 if(Marker.get(Character.toString(s.charAt(i)))==2)        //Consonant
+                 {
+                     Syllable[k] = s.charAt(i);
+                     k++;
+                     if((i+1)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==0)       //consonant+Vowel
+                     {
+                       if(CharMarker.get(Character.toString(s.charAt(i))).equals("H") && i!=0)    
+                       {
+                           Syllable[k] = '-';
+                           k++;
+                       }    
+                     }
+                     if((i+1)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==2)       //consonant
+                     {
+                       if((i+2)<strLen && Marker.get(Character.toString(s.charAt(i+2)))!=3 && Marker.get(Character.toString(s.charAt(i+2)))!=1) //consonant+consonant
+                       {
+                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("F") && CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
+                           {
+                               Syllable[k] = '-';
+                               k++;
+                               flag=1;
+                           }
+                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("H") && CharMarker.get(Character.toString(s.charAt(i+1))).equals("F") && i!=0)
+                           {
+                               Syllable[k] = '-';
+                               k++;
+                               flag=1;
+                           }
+                       }
+                       if((i+2)<strLen && Marker.get(Character.toString(s.charAt(i+2)))==1)          //consonant+matraConsonant
+                       {
+                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("F"))
+                           {
+                               Syllable[k] = '-';
+                               k++;
+                               flag=1;
+                           }
+                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("H") && i!=0)
+                           {
+                               Syllable[k] = '-';
+                               k++;
+                               flag=1;
+                           }
+                       }
+                       if((i+2)== strLen && Marker.get(Character.toString(s.charAt(i+1)))==2)       
+                       {                                                                         //FullVowel + LastConsonant(FULL)
+                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("F") && CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
+                           {
+                               Syllable[k] = '-';
+                               k++;
+                               flag=1;
+                           }
+                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("H") && CharMarker.get(Character.toString(s.charAt(i+1))).equals("F") && i!=0)
+                           {
+                               Syllable[k] = '-';
+                               k++;
+                               flag=1;
+                           }
+                       }
+                     }
+                     if((i+1)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==1)       //Matraconsonant
+                     {
+                         Syllable[k] = s.charAt(i+1);
+                         k++;
+                        if((i+3)<strLen && Marker.get(Character.toString(s.charAt(i+2)))==2 && Marker.get(Character.toString(s.charAt(i+3)))!=3 && Marker.get(Character.toString(s.charAt(i+3)))!=1) //matraconsonant+consonant
+                       {
+                           if(CharMarker.get(Character.toString(s.charAt(i+2))).equals("F"))
+                           {
+                               Syllable[k] = '-';
+                               k++;
+                               flag=1;
+                           }
+                       }
+                       if((i+3)<strLen && Marker.get(Character.toString(s.charAt(i+2)))==2 && Marker.get(Character.toString(s.charAt(i+3)))==1) //matraconsonant+matraconsonant
+                       {
+                            Syllable[k] = '-';
+                            k++;
+                            flag=1;
+                       }
+                     }
+                 }
+             } 
+             for (i=0 ;i < Syllable.length ; i++)
+             {
+                 System.out.print(Syllable[i]);
+             }
+             System.out.println("");
     }
 }
