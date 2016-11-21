@@ -79,6 +79,7 @@ public class Function
              char answer[] = new char[100];
              char[] Syllable = new char[100];
              String x1 = "्",x2;
+             String dummy = "$";
              j = 0;
              System.out.println("Before SCHWA removal : "+s);
              for (i=0 ;i < strLen ; i++)
@@ -525,41 +526,50 @@ public class Function
                          }
                      }  
                  }
-             } 
-             for (i=0 ;i < answer.length ; i++)
+             }
+             answer[k] = dummy.charAt(0);
+             String ans = new String(answer);
+             for (i=0 ;i < ans.length() && ans.charAt(i) != dummy.charAt(0) ; i++)
              {
                  System.out.print(answer[i]);
              }
              System.out.println("");
              
+             for (i=0 ;i < ans.length() && ans.charAt(i) != dummy.charAt(0) ; i++)
+             {
+                 System.out.print("char : " + ans.charAt(i) + "\n");
+             }
              System.out.print("Syllable Boundary: ");
+             
              k = 0;
-             for (i=0 ;i < strLen ; i++)
+             strLen = answer.length;
+             for (i=0 ; ans.charAt(i) != dummy.charAt(0) && i < strLen ; i++)
              {
                  flag = 0;
                //  array[i] = s.charAt(i);
-                 if(Marker.get(Character.toString(s.charAt(i)))==0)     //FullVowel
+              //    System.out.print("char : " + ans.charAt(i) + "\n");
+                 if(Marker.get(Character.toString(answer[i]))==0)     //FullVowel
                  {
-                     Syllable[k] = s.charAt(i);                               
+                     Syllable[k] = answer[i];                               
                      k++;
-                     if((i+2)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==2 && Marker.get(Character.toString(s.charAt(i+2)))==1)       
+                     if(ans.charAt(i+1) != dummy.charAt(0) && ans.charAt(i+2) != dummy.charAt(0) && (i+2)< strLen &&  Marker.get(Character.toString(answer[i+1]))==2 && Marker.get(Character.toString(answer[i+2]))==1)       
                      {                                                                         //FullVowel + MatraConsonant
                         Syllable[k] = '-';              //break
                         k++;
                         flag=1;
                      }
-                     if((i+2)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==2 && Marker.get(Character.toString(s.charAt(i+2)))!=3 && Marker.get(Character.toString(s.charAt(i+2)))!=1)       
+                     if(ans.charAt(i+1) != dummy.charAt(0) && ans.charAt(i+2) != dummy.charAt(0) && (i+2)< strLen && Marker.get(Character.toString(answer[i+1]))==2 && Marker.get(Character.toString(answer[i+2]))!=3 && Marker.get(Character.toString(answer[i+2]))!=1)       
                      {                                                                         //FullVowel + Consonant(FULL)
-                         if(CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
+                         if(CharMarker.get(Character.toString(answer[i+1])).equals("F"))
                          {
                                Syllable[k] = '-';              //break
                                k++;
                                flag=1;
                          }
                      }
-                     if((i+2)== strLen && Marker.get(Character.toString(s.charAt(i+1)))==2)       
+                     if((i+2)== strLen && Marker.get(Character.toString(answer[i+1]))==2)       
                      {                                                                         //FullVowel + LastConsonant(FULL)
-                         if(CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
+                         if(CharMarker.get(Character.toString(answer[i+1])).equals("F"))
                          {
                                Syllable[k] = '-';              //break
                                k++;
@@ -567,87 +577,82 @@ public class Function
                          }
                      }
                  }
-                 if(Marker.get(Character.toString(s.charAt(i)))==2)        //Consonant
+                 if(Marker.get(Character.toString(answer[i]))==2)        //Consonant
                  {
-                     Syllable[k] = s.charAt(i);
+                     Syllable[k] = answer[i];
                      k++;
-                     if((i+1)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==0)       //consonant+Vowel
+                     if(i!=0 && ans.charAt(i+1) != dummy.charAt(0) && ans.charAt(i+2) != dummy.charAt(0) && (i+2)< strLen &&  Marker.get(Character.toString(answer[i+1]))==3 && Marker.get(Character.toString(answer[i+2]))==0) 
                      {
-                       if(CharMarker.get(Character.toString(s.charAt(i))).equals("H") && i!=0)    
-                       {
+                                                                            //consonantHalant(H)+Vowel
                            Syllable[k] = '-';
                            k++;
-                       }    
+                           flag=1;
+                      
                      }
-                     if((i+1)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==2)       //consonant
+                     if(ans.charAt(i+1) != dummy.charAt(0) && ans.charAt(i+2) != dummy.charAt(0) && (i+2)<strLen &&  Marker.get(Character.toString(answer[i+1]))==2 && Marker.get(Character.toString(answer[i+2]))!=3 && Marker.get(Character.toString(answer[i+2]))!=1) //consonant(F)+consonant(F)
                      {
-                       if((i+2)<strLen && Marker.get(Character.toString(s.charAt(i+2)))!=3 && Marker.get(Character.toString(s.charAt(i+2)))!=1) //consonant+consonant
-                       {
-                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("F") && CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
-                           {
-                               Syllable[k] = '-';
-                               k++;
-                               flag=1;
-                           }
-                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("H") && CharMarker.get(Character.toString(s.charAt(i+1))).equals("F") && i!=0)
-                           {
-                               Syllable[k] = '-';
-                               k++;
-                               flag=1;
-                           }
-                       }
-                       if((i+2)<strLen && Marker.get(Character.toString(s.charAt(i+2)))==1)          //consonant+matraConsonant
-                       {
-                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("F"))
-                           {
-                               Syllable[k] = '-';
-                               k++;
-                               flag=1;
-                           }
-                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("H") && i!=0)
-                           {
-                               Syllable[k] = '-';
-                               k++;
-                               flag=1;
-                           }
-                       }
-                       if((i+2)== strLen && Marker.get(Character.toString(s.charAt(i+1)))==2)       
-                       {                                                                         //FullVowel + LastConsonant(FULL)
-                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("F") && CharMarker.get(Character.toString(s.charAt(i+1))).equals("F"))
-                           {
-                               Syllable[k] = '-';
-                               k++;
-                               flag=1;
-                           }
-                           if(CharMarker.get(Character.toString(s.charAt(i))).equals("H") && CharMarker.get(Character.toString(s.charAt(i+1))).equals("F") && i!=0)
-                           {
-                               Syllable[k] = '-';
-                               k++;
-                               flag=1;
-                           }
-                       }
-                     }
-                     if((i+1)< strLen && Marker.get(Character.toString(s.charAt(i+1)))==1)       //Matraconsonant
-                     {
-                         Syllable[k] = s.charAt(i+1);
-                         k++;
-                        if((i+3)<strLen && Marker.get(Character.toString(s.charAt(i+2)))==2 && Marker.get(Character.toString(s.charAt(i+3)))!=3 && Marker.get(Character.toString(s.charAt(i+3)))!=1) //matraconsonant+consonant
-                       {
-                           if(CharMarker.get(Character.toString(s.charAt(i+2))).equals("F"))
-                           {
-                               Syllable[k] = '-';
-                               k++;
-                               flag=1;
-                           }
-                       }
-                       if((i+3)<strLen && Marker.get(Character.toString(s.charAt(i+2)))==2 && Marker.get(Character.toString(s.charAt(i+3)))==1) //matraconsonant+matraconsonant
-                       {
+                        if(CharMarker.get(Character.toString(answer[i])).equals("F") && CharMarker.get(Character.toString(answer[i+1])).equals("F"))
+                        {
                             Syllable[k] = '-';
                             k++;
                             flag=1;
-                       }
+                        }
                      }
+                     if(i!=0 && ans.charAt(i+1) != dummy.charAt(0) && ans.charAt(i+2) != dummy.charAt(0) && ans.charAt(i+3) != dummy.charAt(0) && (i+3)<strLen &&  Marker.get(Character.toString(answer[i+1]))==3 && Marker.get(Character.toString(answer[i+2]))==2 && Marker.get(Character.toString(answer[i+3]))!=3 && Marker.get(Character.toString(answer[i+3]))!=1) 
+                     {
+                        if(CharMarker.get(Character.toString(answer[i+2])).equals("F") && i!=0) //consonantHalant(H)+consonant(F)
+                        {
+                            Syllable[k] = '-';
+                            k++;
+                            flag=1;
+                        }
+                     }
+                     if(ans.charAt(i+1) != dummy.charAt(0) && ans.charAt(i+2) != dummy.charAt(0) && (i+2)<strLen &&  Marker.get(Character.toString(answer[i+1]))==2 && Marker.get(Character.toString(answer[i+2]))==1) //consonant(F)+matraConsonant(F)
+                     {
+                        if(CharMarker.get(Character.toString(answer[i])).equals("F"))
+                        {
+                            Syllable[k] = '-';
+                            k++;
+                            flag=1;
+                        }
+                     }
+                     if(i!=0 && ans.charAt(i+1) != dummy.charAt(0) && ans.charAt(i+2) != dummy.charAt(0) && ans.charAt(i+3) != dummy.charAt(0) && ans.charAt(i+3) != dummy.charAt(0) && (i+3)<strLen &&  Marker.get(Character.toString(answer[i+1]))==3 && Marker.get(Character.toString(answer[i+2]))==2 && Marker.get(Character.toString(answer[i+3]))==1) //consonantHalant(H)+matraConsonant(F)
+                     {  
+                            Syllable[k] = '-';
+                            k++;
+                            flag=1;
+                      }
+                      if(ans.charAt(i+1) != dummy.charAt(0) && (i+1)< strLen &&  Marker.get(Character.toString(answer[i+1]))==1)       //Matraconsonant
+                      {
+                            Syllable[k] = answer[i+1];
+                            k++;
+                            if(ans.charAt(i+1) != dummy.charAt(0) && ans.charAt(i+2) != dummy.charAt(0) && ans.charAt(i+3) != dummy.charAt(0) && (i+3)<strLen &&  Marker.get(Character.toString(answer[i+2]))==2 && Marker.get(Character.toString(answer[i+3]))!=3 && Marker.get(Character.toString(answer[i+3]))!=1) //matraconsonant+consonant
+                           {
+                               if(CharMarker.get(Character.toString(answer[i+2])).equals("F"))
+                               {
+                                   Syllable[k] = '-';
+                                   k++;
+                                   flag=1;
+                               }
+                           }
+                           if(ans.charAt(i+1) != dummy.charAt(0) && ans.charAt(i+2) != dummy.charAt(0) && ans.charAt(i+3) != dummy.charAt(0) && (i+3)<strLen &&  Marker.get(Character.toString(answer[i+2]))==2 && Marker.get(Character.toString(answer[i+3]))==1) //matraconsonant+matraconsonant
+                           {
+                                Syllable[k] = '-';
+                                k++;
+                                flag=1;
+                           }
+                      }
+                      if(ans.charAt(i+1) != dummy.charAt(0) && (i+1)< strLen &&  Marker.get(Character.toString(answer[i+1]))==3 && ans.charAt(i+2) != dummy.charAt(0)&&flag!=1)       //Matraconsonant
+                      {
+                            Syllable[k] = answer[i+1];
+                            k++;
+                      }
                  }
+//                 for (j=0 ;j < Syllable.length ; j++)
+//                {
+//                     System.out.print(Syllable[j]);
+//                }
+//                System.out.println("");
              } 
              for (i=0 ;i < Syllable.length ; i++)
              {
